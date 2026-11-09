@@ -1,0 +1,17 @@
+{
+  "name": "나갈토끼 · 외출 준비 친구",
+  "short_name": "나갈토끼",
+  "description": "외출 준비를 단계별로 함께하는 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff8ef",
+  "theme_color": "#ff8a3d",
+  "lang": "ko",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

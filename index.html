@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8ef">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="나갈토끼">
+<title>나갈토끼 | 외출 준비 친구</title>
+<style>
+:root{
+  --bg:#fff8ef; --card:#ffffff; --ink:#2e2a26; --sub:#6f665d; --line:#eee3d6;
+  --main:#ff8a3d; --main-d:#e8701f; --main-l:#fff0e3;
+  --ok:#3fae6a; --ok-l:#e7f6ec; --sky:#e8f2ff;
+  --r:22px; --fs:18px;
+}
+body.big{--fs:21px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  font-size:var(--fs);line-height:1.45;word-break:keep-all}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding:calc(14px + env(safe-area-inset-top)) 16px 110px}
+.hidden{display:none!important}
+
+/* 상단 */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.top .face{width:52px;height:52px;flex:none}
+.top h1{font-size:1.15em;margin:0}
+.top p{margin:0;color:var(--sub);font-size:.82em}
+.top .grow{flex:1}
+.carrot{display:flex;align-items:center;gap:4px;background:var(--card);border:2px solid var(--line);
+  border-radius:99px;padding:6px 12px;font-weight:700}
+.iconbtn{width:46px;height:46px;border-radius:50%;background:var(--card);border:2px solid var(--line);
+  display:grid;place-items:center;font-size:1.1em}
+
+.card{background:var(--card);border-radius:var(--r);padding:18px;border:2px solid var(--line);margin-bottom:14px}
+
+/* 설치 안내 */
+.install{display:flex;align-items:center;gap:10px;background:var(--sky);border-radius:16px;padding:10px 12px;margin-bottom:12px;font-size:.85em}
+.install b{flex:1;font-weight:700}
+.install button{padding:8px 12px;border-radius:12px;background:#2f6fd6;color:#fff;font-weight:700;font-size:.9em}
+.install .x{background:none;color:var(--sub);padding:6px}
+
+/* 진행 */
+.steps{display:flex;gap:6px;margin:4px 0 10px}
+.dot{flex:1;text-align:center;font-size:.72em;color:var(--sub)}
+.dot i{display:block;height:10px;border-radius:99px;background:var(--line);margin-bottom:6px}
+.dot.on i{background:var(--main)}
+.dot.done i{background:var(--ok)}
+.dot.on{color:var(--ink);font-weight:700}
+.today-reward{font-size:.8em;color:var(--sub);display:flex;justify-content:space-between}
+.homechip{width:100%;margin-top:12px;padding:12px;border-radius:16px;background:var(--sky);font-size:.88em;font-weight:600}
+
+/* 단계 */
+.stephead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.stephead .em{font-size:2.1em}
+.stephead small{display:block;color:var(--main-d);font-weight:700;font-size:.75em}
+.stephead h2{margin:0;font-size:1.25em}
+.guide{color:var(--sub);margin:4px 0 14px}
+.item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;min-height:68px;
+  padding:12px 14px;border-radius:18px;border:2px solid var(--line);background:#fffdfa;margin-bottom:10px;transition:.15s}
+.item .em{font-size:1.6em;width:36px;text-align:center}
+.item .tx{flex:1;font-weight:600}
+.item .ck{width:34px;height:34px;border-radius:50%;border:3px solid #d9cbbb;display:grid;place-items:center;
+  font-size:.9em;color:#fff;flex:none}
+.item[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-l)}
+.item[aria-pressed="true"] .ck{background:var(--ok);border-color:var(--ok)}
+.item[aria-pressed="true"] .ck::after{content:"✓";font-weight:900}
+.helper{display:inline-block;margin:-4px 0 10px 62px;font-size:.78em;color:#2f6fd6;font-weight:600;text-decoration:none}
+.nav{display:flex;gap:10px;margin-top:6px}
+.btn{flex:1;min-height:60px;border-radius:18px;font-weight:800;font-size:1.05em}
+.btn.main{background:var(--main);color:#fff;box-shadow:0 4px 0 var(--main-d)}
+.btn.main:active{transform:translateY(3px);box-shadow:0 1px 0 var(--main-d)}
+.btn.soft{background:var(--main-l);color:var(--main-d);flex:.45}
+.btn.line{background:var(--card);border:2px solid var(--line)}
+
+/* 축하 / 집 */
+.center{text-align:center}
+.center .rabbit{width:170px;margin:0 auto}
+.center h2{margin:6px 0}
+.center p{color:var(--sub);margin:4px 0 16px}
+.bonus{display:inline-block;background:var(--main-l);color:var(--main-d);font-weight:800;border-radius:99px;padding:6px 14px;margin-bottom:14px}
+
+/* 꾸미기 */
+.stage{background:linear-gradient(#e8f2ff,#fff8ef);border-radius:var(--r);padding:14px;text-align:center;margin-bottom:14px;border:2px solid var(--line)}
+.stage .rabbit{width:210px;margin:0 auto}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.goods{border-radius:18px;border:2px solid var(--line);background:var(--card);padding:12px;text-align:center;min-height:120px}
+.goods .em{font-size:2em}
+.goods b{display:block}
+.goods span{font-size:.8em;color:var(--sub)}
+.goods.wear{border-color:var(--ok);background:var(--ok-l)}
+.goods.lock{opacity:.55}
+
+/* 설정 */
+.set-step{border-top:2px dashed var(--line);padding-top:12px;margin-top:12px}
+.set-step:first-child{border:0;margin:0;padding:0}
+.set-step h3{margin:0 0 8px;font-size:1em}
+.row{display:flex;align-items:center;gap:6px;padding:6px 0}
+.row .tx{flex:1;font-size:.9em}
+.mini{width:40px;height:40px;border-radius:12px;background:#f6efe6;font-size:.85em}
+.mini.del{background:#fde8e6;color:#c2410c}
+.add{display:flex;gap:6px;margin-top:6px}
+.add input{flex:1;min-width:0;font:inherit;font-size:.9em;padding:10px 12px;border-radius:12px;border:2px solid var(--line)}
+.add button{padding:0 14px;border-radius:12px;background:var(--main);color:#fff;font-weight:700;font-size:.9em}
+.seg{display:flex;background:#f6efe6;border-radius:14px;padding:4px}
+.seg button{flex:1;padding:10px;border-radius:10px;font-weight:700;font-size:.9em}
+.seg button[aria-pressed="true"]{background:#fff;box-shadow:0 1px 3px #0002}
+.note{font-size:.78em;color:var(--sub);margin:8px 0 0}
+
+/* 하단 탭 */
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--line);
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+.tabbar .in{max-width:440px;margin:0 auto;display:flex;gap:8px}
+.tab{flex:1;min-height:58px;border-radius:16px;font-weight:800;font-size:.95em;color:var(--sub)}
+.tab span{display:block;font-size:1.3em;line-height:1.1}
+.tab[aria-selected="true"]{background:var(--main-l);color:var(--main-d)}
+
+/* 토스트 / 팝업 */
+.toast{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top));transform:translate(-50%,-140%);background:var(--ink);color:#fff;
+  padding:12px 20px;border-radius:99px;font-weight:700;transition:.3s;z-index:20;white-space:nowrap}
+.toast.show{transform:translate(-50%,0)}
+.sheet{position:fixed;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:30}
+.sheet .box{background:#fff;width:100%;max-width:440px;border-radius:26px 26px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));text-align:center}
+.sheet .box .em{font-size:2.6em}
+.sheet .box p{color:var(--sub)}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}}
+.hop{animation:hop .6s ease 2}
+/* v3: 항목 줄 + 도움 버튼 */
+.irow{display:flex;gap:8px;margin-bottom:10px;align-items:stretch}
+.irow .item{margin-bottom:0}
+.helpbtn{flex:none;width:54px;border-radius:18px;border:2px solid var(--line);background:var(--sky);
+  font-weight:800;font-size:.72em;color:#2f6fd6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.helpbtn b{font-size:1.5em;line-height:1}
+.item .tx small{display:block;font-size:.72em;font-weight:700;margin-top:2px}
+.item[aria-pressed="true"] .tx small{color:var(--ok)}
+.item.na{border-style:dashed;background:#f5f2ee;color:#8a8178}
+.item.na .ck{border-color:#cfc6bb;background:#e9e3dc}
+.item.na .ck::after{content:"—";color:#8a8178;font-weight:900}
+.item.na .tx{text-decoration:line-through;text-decoration-color:#b8aea3}
+.item.na .tx small{text-decoration:none;display:inline-block;margin-left:0;color:#8a8178;background:#e9e3dc;border-radius:99px;padding:1px 8px}
+.item.need{border-color:var(--main);border-style:dashed;background:var(--main-l)}
+.item.need .tx small{color:var(--main-d)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #ff8a3d55}50%{box-shadow:0 0 0 8px #ff8a3d00}}
+.item.need{animation:pulse 1.2s ease 3}
+.dot b{display:block;font-size:.95em;color:var(--main-d)}
+.pics{display:flex;align-items:center;justify-content:center;gap:6px;font-size:3.2em;line-height:1.1;
+  background:var(--sky);border-radius:20px;padding:16px 8px;margin:6px 0 12px}
+.pics .ar{font-size:.45em;color:var(--sub)}
+.pics img{max-width:100%;max-height:220px;border-radius:14px}
+.easy{font-size:1.15em;font-weight:700;color:var(--ink)!important;margin:4px 0 14px}
+.sheet .box{max-height:92vh;overflow:auto}
+.sheet .box .nav{flex-wrap:wrap}
+.talk{width:100%;min-height:58px;border-radius:18px;background:#2f6fd6;color:#fff;font-weight:800;margin-bottom:10px}
+.nabtn{width:100%;min-height:50px;border-radius:16px;border:2px dashed #cfc6bb;color:var(--sub);font-weight:700;margin-top:4px;font-size:.88em}
+.sep{border:0;border-top:2px dashed var(--line);margin:14px 0 10px}
+.left{text-align:left}
+.photo{display:flex;gap:6px;align-items:center;margin:2px 0 6px 28px}
+.photo img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+.photo label,.photo button{font-size:.75em;padding:6px 10px;border-radius:10px;background:#f6efe6;font-weight:700;cursor:pointer}
+.photo input{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <svg class="face" viewBox="0 0 200 220" aria-hidden="true"><use href="#rabbitArt"/></svg>
+    <div class="grow">
+      <h1>나갈토끼</h1>
+      <p id="hello">오늘도 같이 준비해요</p>
+    </div>
+    <div class="carrot" aria-label="당근 개수"><span>🥕</span><span id="carrotNum">0</span></div>
+    <button class="iconbtn" id="openSet" aria-label="설정">⚙️</button>
+  </header>
+
+  <div class="install hidden" id="installBar"><span>📲</span><b>홈 화면에 넣으면 앱처럼 열려요</b><button id="installBtn">넣는 방법</button><button class="x" id="installX" aria-label="닫기">✕</button></div>
+
+  <!-- 준비하기 -->
+  <main id="viewReady">
+    <section class="card" id="progressCard">
+      <div class="steps" id="stepDots"></div>
+      <div class="today-reward">
+        <span id="progressText">1단계부터 시작해요</span>
+        <span>오늘 받은 🥕 <b id="todayNum">0</b> / 8</span>
+      </div>
+      <button class="homechip" id="homeBtn">🏠 오늘은 집에 있어요</button>
+    </section>
+
+    <section class="card" id="stepCard">
+      <div class="stephead">
+        <div class="em" id="stepEmoji">📍</div>
+        <div><small id="stepNo">1단계 · 4단계 중</small><h2 id="stepTitle"></h2></div>
+      </div>
+      <p class="guide" id="stepGuide"></p>
+      <div id="itemList"></div>
+      <div class="nav">
+        <button class="btn soft" id="prevBtn">이전</button>
+        <button class="btn main" id="nextBtn">다음</button>
+      </div>
+    </section>
+
+    <section class="card center hidden" id="doneCard">
+      <svg class="rabbit hop" id="doneRabbit" viewBox="0 0 200 220" aria-hidden="true"><use href="#rabbitArt"/></svg>
+      <h2 id="doneTitle">나갈 준비 끝!</h2>
+      <div class="bonus" id="doneBonus"></div>
+      <p id="doneMsg">잘 다녀와요. 토끼가 응원할게요.</p>
+      <div class="nav">
+        <button class="btn line" id="againBtn">다시 보기</button>
+        <button class="btn main" id="goDeco">토끼 꾸미기</button>
+      </div>
+    </section>
+
+    <section class="card center hidden" id="homeCard">
+      <svg class="rabbit" viewBox="0 0 200 220" aria-hidden="true"><use href="#rabbitArt"/></svg>
+      <h2>오늘은 집에서 쉬는 날</h2>
+      <p>쉬는 것도 좋아요.<br>출석 당근은 벌써 받았어요 🥕</p>
+      <button class="btn line" id="outBtn" style="width:100%">외출 준비 다시 하기</button>
+    </section>
+  </main>
+
+  <!-- 꾸미기 -->
+  <main id="viewDeco" class="hidden">
+    <div class="stage">
+      <svg class="rabbit" viewBox="0 0 200 220" role="img" aria-label="꾸민 토끼"><use href="#rabbitArt"/></svg>
+    </div>
+    <p class="guide" style="margin-top:0">당근으로 토끼 물건을 사요. 산 물건을 누르면 입고 벗을 수 있어요.</p>
+    <div class="shop" id="shop"></div>
+  </main>
+
+  <!-- 설정 -->
+  <main id="viewSet" class="hidden">
+    <section class="card">
+      <h2 style="margin:0 0 4px;font-size:1.1em">글자 크기</h2>
+      <div class="seg" id="fontSeg">
+        <button data-f="n">보통</button><button data-f="b">크게</button>
+      </div>
+    </section>
+    <section class="card">
+      <h2 style="margin:0 0 4px;font-size:1.1em">도움 버튼 (그림·소리 안내)</h2>
+      <div class="seg" id="helpSeg">
+        <button data-h="on">보이기</button><button data-h="off">숨기기</button>
+      </div>
+      <p class="note">항목 옆 <b>?</b> 도움 버튼을 누를 때만 그림·쉬운 문장·소리 안내가 열려요.</p>
+    </section>
+    <section class="card">
+      <h2 style="margin:0 0 4px;font-size:1.1em">준비 항목 바꾸기</h2>
+      <p class="note" style="margin:0 0 10px">보호자·선생님이 이용자와 함께 바꿔요. ↑↓로 순서를 바꾸고, 📷로 실제 물건 사진을 도움 그림으로 넣을 수 있어요.</p>
+      <div id="setList"></div>
+    </section>
+    <section class="card">
+      <button class="btn line" id="resetToday" style="width:100%">오늘 체크 처음부터 하기</button>
+      <p class="note">모은 당근과 꾸미기 물건은 그대로 있어요.</p>
+    </section>
+    <section class="card">
+      <button class="btn line" id="showInstall" style="width:100%">📲 홈 화면에 앱으로 넣는 방법</button>
+    </section>
+    <button class="btn main" id="closeSet" style="width:100%">설정 닫기</button>
+  </main>
+</div>
+
+<nav class="tabbar" id="tabbar" role="tablist">
+  <div class="in">
+    <button class="tab" role="tab" data-v="Ready" aria-selected="true"><span>✅</span>준비하기</button>
+    <button class="tab" role="tab" data-v="Deco" aria-selected="false"><span>🎀</span>꾸미기</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sheet hidden" id="sheet"><div class="box" id="sheetBox"></div></div>
+
+<!-- 토끼 그림 -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="rabbitArt">
+      <ellipse cx="72" cy="52" rx="20" ry="48" fill="#fff" stroke="#3a3330" stroke-width="4"/>
+      <ellipse cx="72" cy="58" rx="9" ry="32" fill="#ffc9cf"/>
+      <ellipse cx="128" cy="52" rx="20" ry="48" fill="#fff" stroke="#3a3330" stroke-width="4"/>
+      <ellipse cx="128" cy="58" rx="9" ry="32" fill="#ffc9cf"/>
+      <ellipse cx="100" cy="182" rx="48" ry="34" fill="#fff" stroke="#3a3330" stroke-width="4"/>
+      <circle cx="100" cy="122" r="54" fill="#fff" stroke="#3a3330" stroke-width="4"/>
+      <circle cx="80" cy="118" r="6" fill="#3a3330"/>
+      <circle cx="120" cy="118" r="6" fill="#3a3330"/>
+      <circle cx="82" cy="116" r="2" fill="#fff"/><circle cx="122" cy="116" r="2" fill="#fff"/>
+      <ellipse cx="68" cy="136" rx="10" ry="6" fill="#ffc9cf"/>
+      <ellipse cx="132" cy="136" rx="10" ry="6" fill="#ffc9cf"/>
+      <path d="M94 132 Q100 138 106 132" fill="none" stroke="#3a3330" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M100 136 v6" stroke="#3a3330" stroke-width="3" stroke-linecap="round"/>
+      <g class="acc" data-a="scarf" style="display:none">
+        <path d="M58 166 Q100 186 142 166 L142 178 Q100 198 58 178Z" fill="#e85d5d"/>
+        <rect x="112" y="176" width="16" height="30" rx="5" fill="#e85d5d"/>
+      </g>
+      <g class="acc" data-a="bag" style="display:none">
+        <path d="M60 166 L140 200" stroke="#8b5a2b" stroke-width="5"/>
+        <rect x="128" y="186" width="34" height="26" rx="7" fill="#b07a45" stroke="#7a4f24" stroke-width="3"/>
+      </g>
+      <g class="acc" data-a="glasses" style="display:none">
+        <circle cx="80" cy="118" r="15" fill="#fff4" stroke="#3a3330" stroke-width="4"/>
+        <circle cx="120" cy="118" r="15" fill="#fff4" stroke="#3a3330" stroke-width="4"/>
+        <path d="M95 118 h10" stroke="#3a3330" stroke-width="4"/>
+      </g>
+      <g class="acc" data-a="hat" style="display:none">
+        <ellipse cx="100" cy="76" rx="58" ry="11" fill="#4a7bd8"/>
+        <path d="M66 76 Q66 36 100 36 Q134 36 134 76Z" fill="#5b8ff0"/>
+        <rect x="66" y="64" width="68" height="9" fill="#ffd25e"/>
+      </g>
+      <g class="acc" data-a="ribbon" style="display:none">
+        <path d="M128 70 L108 58 L108 82Z M128 70 L148 58 L148 82Z" fill="#ff7aa8"/>
+        <circle cx="128" cy="70" r="6" fill="#ff5c93"/>
+      </g>
+      <g class="acc" data-a="flower" style="display:none">
+        <g transform="translate(48 192)">
+          <circle cx="0" cy="-9" r="7" fill="#ffd25e"/><circle cx="9" cy="0" r="7" fill="#ffd25e"/>
+          <circle cx="0" cy="9" r="7" fill="#ffd25e"/><circle cx="-9" cy="0" r="7" fill="#ffd25e"/>
+          <circle r="6" fill="#ff8a3d"/>
+        </g>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<script>
+(function(){
+const MAX_DAY = 8;
+const R = {attend:1, step:1, all:3};
+
+const DEFAULT_STEPS = [
+  {emoji:"📍", title:"어디 가는지 확인해요", guide:"오늘 갈 곳과 시간을 먼저 봐요.", items:[
+    {e:"📍", t0:"갈 곳 확인하기", t:"갈 곳을 확인했어요", old:"갈 곳을 알아요", pic:["📅","📍"], say:"달력이나 문자에서 오늘 갈 곳을 봐요."},
+    {e:"⏰", t0:"나갈 시간 확인하기", t:"나갈 시간을 확인했어요", old:"나갈 시간을 알아요", pic:["🕘","🚪"], say:"몇 시에 집에서 나가야 하는지 봐요."},
+    {e:"🌤️", t0:"날씨 보기", t:"날씨를 봤어요", old:"날씨를 봤어요", pic:["☀️","🌧️","❄️"], say:"비가 오면 우산을 챙겨요. 추우면 따뜻한 옷을 입어요.", link:"https://weather.naver.com", lt:"날씨 보러 가기"},
+    {e:"🚌", t0:"가는 방법 확인하기", t:"가는 방법을 확인했어요", old:"가는 방법을 알아요", pic:["🚶","🚌","🚇"], say:"걸어갈지, 버스나 지하철을 탈지 확인해요.", link:"https://map.naver.com", lt:"길 찾아보기"}]},
+  {emoji:"🪥", title:"내 몸을 준비해요", guide:"깨끗하고 편한 모습으로 나가요.", items:[
+    {e:"🪥", t0:"이 닦기", t:"이를 닦았어요", old:"이를 닦았어요", pic:["🪥","🦷","💧"], say:"칫솔에 치약을 짜요. 이를 위아래로 닦아요. 물로 입을 헹궈요."},
+    {e:"🧼", t0:"세수하기", t:"세수를 했어요", old:"세수를 했어요", pic:["💧","🧼","🙂"], say:"물로 얼굴을 씻어요. 수건으로 닦아요."},
+    {e:"👕", t0:"날씨에 맞는 옷 입기", t:"날씨에 맞는 옷을 입었어요", old:"날씨에 맞는 옷을 입었어요", pic:["👕","👖","🧥"], say:"오늘 날씨에 맞는 옷을 골라 입어요."},
+    {e:"🚻", t0:"화장실 다녀오기", t:"화장실에 다녀왔어요", old:"화장실에 다녀왔어요", pic:["🚻","🧼"], say:"나가기 전에 화장실에 가요. 손을 씻어요."}]},
+  {emoji:"🎒", title:"가방을 챙겨요", guide:"꼭 필요한 물건을 하나씩 넣어요.", items:[
+    {e:"📱", t0:"휴대폰 챙기기", t:"휴대폰을 챙겼어요", old:"휴대폰을 챙겼어요", pic:["📱","🎒"], say:"휴대폰을 가방이나 주머니에 넣어요."},
+    {e:"💳", t0:"교통카드·지갑 챙기기", t:"교통카드·지갑을 챙겼어요", old:"교통카드·지갑을 챙겼어요", pic:["💳","👛","🎒"], say:"교통카드와 지갑을 가방에 넣어요."},
+    {e:"🔑", t0:"열쇠 챙기기", t:"열쇠를 챙겼어요", old:"열쇠를 챙겼어요", pic:["🔑","🎒"], say:"집 열쇠를 가방이나 주머니에 넣어요."},
+    {e:"💊", t0:"약 챙기기", t:"약을 챙겼어요", old:"약을 챙겼어요", pic:["💊","🎒"], say:"먹어야 하는 약이 있으면 가방에 넣어요."}]},
+  {emoji:"🏠", title:"집을 확인해요", guide:"나가기 전에 집을 한 번 둘러봐요.", items:[
+    {e:"🔥", t0:"가스불 끄기", t:"가스불을 껐어요", old:"가스불을 껐어요", pic:["🔥","🚫"], say:"가스레인지 불이 꺼졌는지 봐요."},
+    {e:"💡", t0:"불 끄기", t:"불을 껐어요", old:"불을 껐어요", pic:["💡","🌙"], say:"방과 화장실 불을 꺼요."},
+    {e:"🪟", t0:"창문 닫기", t:"창문을 닫았어요", old:"창문을 닫았어요", pic:["🪟","✋"], say:"열린 창문이 있으면 닫아요."},
+    {e:"🚪", t0:"문 잠그기", t:"문을 잠갔어요", old:"문을 잠갔어요", pic:["🚪","🔒"], say:"나가면서 문을 잠가요. 손잡이를 당겨서 확인해요."}]}
+];
+
+const GOODS = [
+  {id:"ribbon", e:"🎀", n:"리본", p:2},
+  {id:"flower", e:"🌼", n:"꽃 친구", p:2},
+  {id:"glasses",e:"👓", n:"동그란 안경", p:4},
+  {id:"scarf",  e:"🧣", n:"목도리", p:4},
+  {id:"hat",    e:"🧢", n:"모자", p:6},
+  {id:"bag",    e:"👜", n:"작은 가방", p:6}
+];
+
+const KEY = "nagal-tokki-v2";
+const todayStr = () => { const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
+let uid = 0; const nid = () => "i"+Date.now().toString(36)+(uid++);
+const strip = it => { const {old, ...rest} = it; return rest; };
+function freshSteps(){ return DEFAULT_STEPS.map(s=>({...s, items:s.items.map(i=>({...strip(i), id:nid()}))})); }
+function doneText(t0){
+  const rules = [["챙기기","챙겼어요"],["확인하기","확인했어요"],["하기","했어요"],["끄기","껐어요"],["닫기","닫았어요"],
+                 ["잠그기","잠갔어요"],["입기","입었어요"],["씻기","씻었어요"],["보기","봤어요"],["먹기","먹었어요"],
+                 ["넣기","넣었어요"],["신기","신었어요"],["쓰기","썼어요"],["가기","갔어요"],["오기","왔어요"]];
+  for(const [a,b] of rules) if(t0.endsWith(a)) return t0.slice(0,-a.length)+b;
+  return t0;
+}
+function migrate(s){
+  if(s.ver>=3) return s;
+  const byOld = {};
+  DEFAULT_STEPS.forEach(st=>st.items.forEach(i=>byOld[i.old]=i));
+  s.steps.forEach(st=>{
+    st.items = st.items.map(it=>{
+      if(it.t0) return it;
+      const d = byOld[it.t];
+      if(d){ const {old, link, lt, ...rest} = d; return {...it, ...rest, ...(d.link?{link:d.link, lt:d.lt}:{})}; }
+      return {...it, t0:it.t};
+    });
+  });
+  s.na = s.na || {}; s.photos = s.photos || {}; s.showHelp = s.showHelp!==false; s.ver = 3;
+  return s;
+}
+function load(){
+  let s=null; try{ s=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if(!s || !s.steps) s={steps:freshSteps(), carrots:0, owned:[], worn:[], font:"n", na:{}, photos:{}, showHelp:true, ver:3};
+  return migrate(s);
+}
+let S = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); return true; }catch(e){ return false; } }
+
+function newDayIfNeeded(){
+  if(S.date !== todayStr()){
+    S.date = todayStr(); S.checks = {}; S.awarded = {}; S.dayGot = 0; S.cur = 0; S.mode = "out"; S.finished = false;
+    give(R.attend, "attend", "오늘 출석! 🥕 +1");
+  }
+}
+function give(n, key, msg){
+  if(S.awarded[key]) return 0;
+  S.awarded[key] = true;
+  const real = Math.max(0, Math.min(n, MAX_DAY - S.dayGot));
+  S.dayGot += real; S.carrots += real; save();
+  if(real>0 && msg) toast(msg.replace(/\+\d+/, "+"+real));
+  return real;
+}
+
+const $ = id => document.getElementById(id);
+let view = "Ready";
+let remind = false;
+const isNA = it => !!S.na[it.id];
+const isOK = it => !!S.checks[it.id] && !isNA(it);
+const left = i => S.steps[i].items.filter(it=>!isOK(it) && !isNA(it));
+function stepDone(i){ return left(i).length===0; }
+function allDone(){ return S.steps.every((_,i)=>stepDone(i)); }
+function anyReal(){ return S.steps.some(s=>s.items.some(isOK)); }
+function findItem(id){ for(const s of S.steps){ const it=s.items.find(x=>x.id===id); if(it) return it; } }
+
+function renderTop(){
+  $("carrotNum").textContent = S.carrots;
+  $("todayNum").textContent = S.dayGot;
+  const h = new Date().getHours();
+  $("hello").textContent = h<11 ? "좋은 아침이에요" : h<17 ? "오늘도 같이 준비해요" : "오늘 하루도 수고했어요";
+  document.body.classList.toggle("big", S.font==="b");
+  document.querySelectorAll(".acc").forEach(g => g.style.display = S.worn.includes(g.dataset.a) ? "" : "none");
+}
+function renderReady(){
+  const home = S.mode==="home";
+  $("homeCard").classList.toggle("hidden", !home);
+  $("progressCard").classList.toggle("hidden", home);
+  $("stepCard").classList.toggle("hidden", home || S.finished);
+  $("doneCard").classList.toggle("hidden", home || !S.finished);
+  if(home) return;
+  $("stepDots").innerHTML = S.steps.map((s,i)=>{
+    const n = left(i).length;
+    return `<div class="dot ${stepDone(i)?"done":""} ${i===S.cur&&!S.finished?"on":""}"><i></i>${s.emoji} ${["오늘","내 몸","가방","우리 집"][i]||(i+1)+"단계"}${remind&&n?`<b>남은 것 ${n}</b>`:""}</div>`;
+  }).join("");
+  const doneN = S.steps.filter((_,i)=>stepDone(i)).length;
+  $("progressText").textContent = doneN===0 ? "1단계부터 시작해요" : `${S.steps.length}단계 중 ${doneN}단계 했어요`;
+  if(S.finished){
+    const ok = allDone();
+    $("doneTitle").textContent = ok ? "나갈 준비 끝!" : "오늘은 여기까지 했어요";
+    $("doneMsg").textContent = ok ? "잘 다녀와요. 토끼가 응원할게요." : "한 것만으로도 충분해요. 다음에 또 해요.";
+    $("doneBonus").textContent = `오늘 받은 당근 🥕 ${S.dayGot}개`;
+    return;
+  }
+  const st = S.steps[S.cur];
+  $("stepEmoji").textContent = st.emoji;
+  $("stepNo").textContent = `${S.cur+1}단계 · ${S.steps.length}단계 중`;
+  $("stepTitle").textContent = st.title;
+  $("stepGuide").textContent = st.guide;
+  $("itemList").innerHTML = st.items.length ? st.items.map(it=>{
+    const ok=isOK(it), na=isNA(it), need=remind && !ok && !na;
+    const text = ok ? (it.t||it.t0) : it.t0;
+    const tag  = na ? "해당 없어요" : need ? "아직이에요" : "";
+    return `<div class="irow">
+      <button class="item ${na?"na":""} ${need?"need":""}" data-id="${it.id}" aria-pressed="${ok}">
+        <span class="em" aria-hidden="true">${it.e||"✔️"}</span>
+        <span class="tx">${esc(text)}${tag?`<small>${tag}</small>`:""}</span>
+        <span class="ck" aria-hidden="true"></span>
+      </button>
+      ${S.showHelp?`<button class="helpbtn" data-help="${it.id}" aria-label="${esc(it.t0)} 도움 보기"><b>?</b>도움</button>`:""}
+    </div>${it.link && !na?`<a class="helper" href="${it.link}" target="_blank" rel="noopener">👉 ${it.lt}</a>`:""}`;
+  }).join("") : `<p class="guide">이 단계에 항목이 없어요. 설정에서 넣을 수 있어요.</p>`;
+  $("prevBtn").classList.toggle("hidden", S.cur===0);
+  const last = S.cur===S.steps.length-1;
+  $("nextBtn").textContent = last ? "준비 마치기" : (stepDone(S.cur) ? "다음 단계로" : "다음");
+  if(remind){ const f=document.querySelector(".item.need"); if(f) f.scrollIntoView({block:"center",behavior:"smooth"}); }
+}
+function renderShop(){
+  $("shop").innerHTML = GOODS.map(g=>{
+    const own=S.owned.includes(g.id), wear=S.worn.includes(g.id), can=S.carrots>=g.p;
+    const sub = own ? (wear?"착용 중 · 누르면 벗기":"누르면 착용하기") : `🥕 ${g.p}개${can?"":" · 조금 더 모아요"}`;
+    return `<button class="goods ${wear?"wear":""} ${!own&&!can?"lock":""}" data-g="${g.id}">
+      <div class="em">${g.e}</div><b>${g.n}</b><span>${sub}</span></button>`;
+  }).join("");
+}
+function renderSet(){
+  document.querySelectorAll("#fontSeg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.f===S.font));
+  document.querySelectorAll("#helpSeg button").forEach(b=>b.setAttribute("aria-pressed", (b.dataset.h==="on")===S.showHelp));
+  $("setList").innerHTML = S.steps.map((s,si)=>`
+    <div class="set-step"><h3>${s.emoji} ${si+1}단계 · ${esc(s.title)}</h3>
+      ${s.items.map((it,ii)=>`<div class="row"><span>${it.e||"✔️"}</span><span class="tx">${esc(it.t0)}${isNA(it)?" <small style='color:#8a8178'>(해당 없음)</small>":""}</span>
+        <button class="mini" data-act="up" data-s="${si}" data-i="${ii}" aria-label="위로">↑</button>
+        <button class="mini" data-act="down" data-s="${si}" data-i="${ii}" aria-label="아래로">↓</button>
+        <button class="mini del" data-act="del" data-s="${si}" data-i="${ii}" aria-label="삭제">✕</button></div>
+        <div class="photo">${S.photos[it.id]?`<img src="${S.photos[it.id]}" alt="">`:""}
+          <label>📷 ${S.photos[it.id]?"사진 바꾸기":"도움 사진 넣기"}<input type="file" accept="image/*" data-photo="${it.id}"></label>
+          ${S.photos[it.id]?`<button data-unphoto="${it.id}">사진 빼기</button>`:""}</div>`).join("")}
+      <form class="add" data-s="${si}"><input placeholder="새 항목 (예: 우산 챙기기)" maxlength="20"><button>추가</button></form>
+    </div>`).join("");
+}
+function show(v){
+  view=v;
+  ["Ready","Deco","Set"].forEach(x=>$("view"+x).classList.toggle("hidden", x!==v));
+  $("tabbar").classList.toggle("hidden", v==="Set");
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.v===v));
+  render(); window.scrollTo(0,0);
+}
+function render(){ renderTop(); if(view==="Ready")renderReady(); if(view==="Deco")renderShop(); if(view==="Set")renderSet(); }
+
+function eul(w){const c=w.charCodeAt(w.length-1)-44032;return w+((c>=0&&c<11172&&c%28)?"을":"를");}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+let tt; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("show"),1800); }
+function closeSheet(){ $("sheet").classList.add("hidden"); try{ speechSynthesis.cancel(); }catch(e){} }
+function sheet(html, actions){
+  $("sheetBox").innerHTML = html + `<div class="nav">${actions.map((a,i)=>`<button class="btn ${a.cls||"line"}" data-k="${i}">${a.label}</button>`).join("")}</div>`;
+  $("sheet").classList.remove("hidden");
+  $("sheetBox").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ closeSheet(); const f=actions[b.dataset.k].fn; f&&f(); });
+}
+$("sheet").onclick = e => { if(e.target.id==="sheet") closeSheet(); };
+
+const canTalk = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+function talk(text){
+  if(!canTalk){ toast("이 휴대폰에서는 소리 안내가 안 돼요"); return; }
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang="ko-KR"; u.rate=0.85;
+    const v = speechSynthesis.getVoices().find(v=>/ko/i.test(v.lang)); if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){ toast("소리를 낼 수 없어요"); }
+}
+function openHelp(id){
+  const it=findItem(id); if(!it) return;
+  const say = it.say || it.t0;
+  const pic = S.photos[id] ? `<img src="${S.photos[id]}" alt="${esc(it.t0)} 사진">`
+            : (it.pic||[it.e||"✔️"]).map(p=>`<span>${p}</span>`).join(`<span class="ar">▶</span>`);
+  const na = isNA(it);
+  $("sheetBox").innerHTML = `
+    <h3 style="margin:0">${it.e||""} ${esc(it.t0)}</h3>
+    <div class="pics" aria-hidden="${!S.photos[id]}">${pic}</div>
+    <p class="easy">${esc(say)}</p>
+    <button class="talk" id="hTalk">🔊 소리로 듣기</button>
+    ${it.link?`<a class="helper" style="margin:0 0 6px" href="${it.link}" target="_blank" rel="noopener">👉 ${it.lt}</a>`:""}
+    <button class="btn line" id="hClose" style="width:100%">닫기</button>
+    <hr class="sep">
+    <button class="nabtn" id="hNA">${na?"↩️ 이 준비가 다시 필요해요":"🚫 저에게는 해당 없어요"}</button>`;
+  $("sheet").classList.remove("hidden");
+  $("hTalk").onclick = () => talk(it.t0 + ". " + say);
+  $("hClose").onclick = closeSheet;
+  $("hNA").onclick = () => na ? setNA(it,false) : askNA(it);
+}
+function askNA(it){
+  sheet(`<div class="em">🚫</div><h3>"${esc(it.t0)}"<br>해당 없어요?</h3><p>나에게 필요 없는 준비면 빼고 넘어가요.<br>나중에 다시 켤 수 있어요.</p>`,
+    [{label:"아니요"},{label:"네, 해당 없어요",cls:"main",fn:()=>setNA(it,true)}]);
+}
+function setNA(it,on){
+  if(on){ S.na[it.id]=true; delete S.checks[it.id]; } else delete S.na[it.id];
+  closeSheet();
+  if(stepDone(S.cur) && S.steps[S.cur].items.length>0) give(R.step, "step-"+S.cur, `${S.cur+1}단계 완료! 🥕 +1`);
+  save(); render(); toast(on?"해당 없음으로 바꿨어요":"다시 준비 목록에 넣었어요");
+}
+
+$("itemList").onclick = e => {
+  const h = e.target.closest("[data-help]"); if(h){ openHelp(h.dataset.help); return; }
+  const b = e.target.closest(".item"); if(!b) return;
+  const it = findItem(b.dataset.id);
+  if(isNA(it)){
+    sheet(`<div class="em">↩️</div><h3>"${esc(it.t0)}"<br>다시 할까요?</h3><p>지금은 '해당 없어요'로 되어 있어요.</p>`,
+      [{label:"아니요"},{label:"다시 할래요",cls:"main",fn:()=>setNA(it,false)}]);
+    return;
+  }
+  S.checks[it.id]=!S.checks[it.id];
+  if(stepDone(S.cur)) give(R.step, "step-"+S.cur, `${S.cur+1}단계 완료! 🥕 +1`);
+  if(remind && allDone()) remind=false;
+  save(); render();
+};
+function finish(){
+  S.finished = true; remind=false;
+  if(allDone() && anyReal()) give(R.all, "all", "오늘 준비 다 했어요! 🥕 +3");
+  save(); render(); window.scrollTo(0,0);
+}
+$("nextBtn").onclick = () => {
+  if(S.cur < S.steps.length-1){ S.cur++; save(); render(); window.scrollTo(0,0); return; }
+  const miss = S.steps.map((_,i)=>left(i).length).reduce((a,b)=>a+b,0);
+  if(miss===0){ finish(); return; }
+  sheet(`<div class="em">🔎</div><h3>아직 확인하지 않은 준비가 있어요</h3><p>${miss}개 남았어요.</p>`,
+    [{label:"다시 확인하기",cls:"main",fn:()=>{ remind=true; S.cur = S.steps.findIndex((_,i)=>left(i).length>0); save(); render(); }},
+     {label:"오늘은 여기까지",fn:finish}]);
+};
+$("prevBtn").onclick = () => { if(S.cur>0){S.cur--; save(); render();} };
+$("againBtn").onclick = () => { S.finished=false; S.cur=0; save(); render(); };
+$("goDeco").onclick = () => show("Deco");
+$("homeBtn").onclick = () => sheet(`<div class="em">🏠</div><h3>오늘은 집에 있을까요?</h3><p>괜찮아요. 쉬는 날도 필요해요.</p>`,
+  [{label:"아니요"},{label:"네, 집에 있어요",cls:"main",fn:()=>{S.mode="home";save();render();}}]);
+$("outBtn").onclick = () => { S.mode="out"; save(); render(); };
+
+$("shop").onclick = e => {
+  const b=e.target.closest(".goods"); if(!b) return;
+  const g=GOODS.find(x=>x.id===b.dataset.g);
+  if(S.owned.includes(g.id)){
+    const on = !S.worn.includes(g.id);
+    S.worn = on ? [...S.worn, g.id] : S.worn.filter(x=>x!==g.id);
+    save(); render(); toast(on?`${eul(g.n)} 착용했어요`:`${eul(g.n)} 벗었어요`); return;
+  }
+  if(S.carrots < g.p){ toast(`당근이 ${g.p-S.carrots}개 더 필요해요`); return; }
+  sheet(`<div class="em">${g.e}</div><h3>${eul(g.n)} 살까요?</h3><p>당근 🥕 ${g.p}개를 써요. (지금 ${S.carrots}개)</p>`,
+    [{label:"다음에"},{label:"살래요",cls:"main",fn:()=>{S.carrots-=g.p;S.owned.push(g.id);S.worn.push(g.id);save();render();toast(`${eul(g.n)} 착용했어요!`);}}]);
+};
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.v));
+$("openSet").onclick = () => show(view==="Set"?"Ready":"Set");
+$("closeSet").onclick = () => show("Ready");
+$("fontSeg").onclick = e => { const b=e.target.closest("button"); if(!b)return; S.font=b.dataset.f; save(); render(); };
+$("helpSeg").onclick = e => { const b=e.target.closest("button"); if(!b)return; S.showHelp=b.dataset.h==="on"; save(); render(); };
+$("setList").onclick = e => {
+  const u=e.target.closest("[data-unphoto]"); if(u){ delete S.photos[u.dataset.unphoto]; save(); render(); return; }
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const items=S.steps[+b.dataset.s].items, i=+b.dataset.i;
+  if(b.dataset.act==="del"){ sheet(`<h3>이 항목을 지울까요?</h3><p>${esc(items[i].t0)}</p>`,[{label:"아니요"},{label:"지우기",cls:"main",fn:()=>{const id=items[i].id;items.splice(i,1);delete S.na[id];delete S.photos[id];save();render();}}]); return; }
+  const j = b.dataset.act==="up" ? i-1 : i+1;
+  if(j<0||j>=items.length) return;
+  [items[i],items[j]]=[items[j],items[i]]; save(); render();
+};
+$("setList").addEventListener("change", e => {
+  const inp=e.target.closest("[data-photo]"); if(!inp||!inp.files[0]) return;
+  const id=inp.dataset.photo, img=new Image(), url=URL.createObjectURL(inp.files[0]);
+  img.onload = () => {
+    const k=Math.min(1, 480/Math.max(img.width,img.height)), c=document.createElement("canvas");
+    c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+    S.photos[id]=c.toDataURL("image/jpeg",0.75);
+    if(!save()){ delete S.photos[id]; toast("저장 공간이 부족해요"); } else toast("도움 사진을 넣었어요");
+    render();
+  };
+  img.onerror = () => toast("사진을 열 수 없어요");
+  img.src=url;
+});
+$("setList").addEventListener("submit", e => {
+  e.preventDefault();
+  const f=e.target, v=f.querySelector("input").value.trim(); if(!v) return;
+  S.steps[+f.dataset.s].items.push({id:nid(), e:"✔️", t0:v, t:doneText(v)}); save(); render(); toast("항목을 넣었어요");
+});
+$("resetToday").onclick = () => sheet(`<h3>오늘 체크를 처음부터 할까요?</h3><p>오늘 받은 당근은 다시 받지 않아요.</p>`,
+  [{label:"아니요"},{label:"처음부터",cls:"main",fn:()=>{S.checks={};S.cur=0;S.finished=false;S.mode="out";remind=false;save();show("Ready");}}]);
+
+/* ---------- 홈 화면에 추가 (PWA) ---------- */
+const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredPrompt = e; });
+function installHow(){
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; }); return; }
+  const html = ios
+    ? `<div class="em">📲</div><h3>아이폰에서 앱처럼 넣기</h3><p class="left" style="font-size:.95em;line-height:1.7">1. 사파리 아래쪽 <b>공유 버튼</b>(네모에 화살표)을 눌러요.<br>2. 아래로 내려서 <b>"홈 화면에 추가"</b>를 눌러요.<br>3. 오른쪽 위 <b>추가</b>를 눌러요.<br><br>홈 화면에 토끼 아이콘이 생겨요. 다음부터는 그걸 눌러서 열어요.</p>`
+    : `<div class="em">📲</div><h3>안드로이드에서 앱처럼 넣기</h3><p class="left" style="font-size:.95em;line-height:1.7">1. 크롬 오른쪽 위 <b>점 세 개(⋮)</b>를 눌러요.<br>2. <b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b>를 눌러요.<br>3. <b>추가</b>를 눌러요.<br><br>홈 화면에 토끼 아이콘이 생겨요. 다음부터는 그걸 눌러서 열어요.</p>`;
+  sheet(html, [{label:"알겠어요", cls:"main"}]);
+}
+$("installBtn").onclick = installHow;
+$("showInstall").onclick = installHow;
+$("installX").onclick = () => { S.hideInstall = true; save(); $("installBar").classList.add("hidden"); };
+if(!standalone && !S.hideInstall && S.date){ /* 두 번째 방문부터 안내 */ $("installBar").classList.remove("hidden"); }
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){ navigator.serviceWorker.register("./sw.js").catch(()=>{}); }
+
+newDayIfNeeded(); save(); show("Ready");
+})();
+</script>
+
+</body>
+</html>
